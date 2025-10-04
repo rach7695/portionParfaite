@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats du calcul{% endblock %}
+
+{% block stylesheets %}
+    {{parent() }}
+    <link rel="stylesheet" href="{{asset('css/resultat.css')}}">
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Résultats pour {{ calcul.typeEvenement }}</h1>
+    <p><strong>Nombre de personnes :</strong> {{ calcul.nbPersonnes }}</p>
+    <p><strong>Nombre d'enfants :</strong> {{ calcul.nbEnfants }}</p>
+    <p><strong>Total invités :</strong> {{ calcul.totalPersonnes }}</p>
+    <p><strong>Date de l'événement :</strong> {{ calcul.dateEvenement|date('d/m/Y') }}</p>
+    <p><strong>Date du calcul :</strong> {{ calcul.dateCalcul|date('d/m/Y H:i') }}</p>
+
+    <h2 class="mt-4">Détails :</h2>
+    
+    {# 🎯 VERSION AMÉLIORÉE avec liens Amazon #}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th><i class="bi bi-box"></i> Produit</th>
+                    <th class="text-center"><i class="bi bi-123"></i> Quantité</th>
+                    <th class="text-center"><i class="bi bi-cart"></i> Acheter</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item, quantite in resultats %}
+                <tr>
+                    <td>{{ item }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-primary fs-6">{{ quantite }}</span>
+                    </td>
+                    <td class="text-center">
+                        {# ✅ AJOUT du service Amazon ici #}
+                        {% if amazonService is defined %}
+                            {{ amazonService.genererBoutonAchat(item, calcul.typeEvenement, {
+                                'class': 'btn btn-success btn-sm',
+                                'text': 'Acheter',
+                                'icon': '<i class="bi bi-cart-plus"></i>'
+                            })|raw }}
+                        {% else %}
+                            {# Fallback si le service n'est pas disponible #}
+                            <a href="https://www.amazon.fr/s?k={{ item|url_encode }}" 
+                               target="_blank" 
+                               class="btn btn-success btn-sm">
+                                <i class="bi bi-cart-plus"></i> Acheter
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# 🎯 AJOUT d'une section avec conseils #}
+    <div class="row mt-5">
+        <div class="col-md-8">
+            <div class="alert alert-info">
+                <h5><i class="bi bi-lightbulb"></i> Conseils pour votre {{ calcul.typeEvenement }} :</h5>
+                {% if calcul.typeEvenement == 'apero' %}
+                    <ul class="mb-0">
+                        <li>Prévoyez 30% de boissons sans alcool</li>
+                        <li>Comptez 3-5 amuse-bouches différents par personne</li>
+                        <li>Servez les produits frais en fin de préparation</li>
+                    </ul>
+                {% elseif calcul.typeEvenement == 'mariage' %}
+                    <ul class="mb-0">
+                        <li>Commandez 10% de quantités en plus par sécurité</li>
+                        <li>Prévoyez du champagne pour le toast (1 bouteille pour 10 personnes)</li>
+                        <li>N'oubliez pas les boissons chaudes pour la fin de soirée</li>
+                    </ul>
+                {% else  %}
+                    <p class="mb-0">Pensez à assaisonner vos viandes la veille. Elles n'en seront que meilleures !</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-success">
+                        <i class="bi bi-calculator"></i> Besoin d'un autre calcul ?
+                    </h6>
+                    <p class="card-text small">
+                        Calculez pour d'autres types d'événements
+                    </p>
+                    <a href="{{ path('app_calcul') }}" class="btn btn-success btn-sm">
+                        Nouveau calcul
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# 🎯 Boutons d'actions #}
+    <div class="d-flex gap-2 justify-content-center mt-4">
+        <a href="{{ path('app_calcul') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Nouveau calcul
+        </a>
+        <button onclick="window.print()" class="btn btn-outline-primary">
+            <i class="bi bi-printer"></i> Imprimer la liste
+        </button>
+        <button onclick="copyToClipboard()" class="btn btn-outline-info" id="copyBtn">
+            <i class="bi bi-clipboard"></i> Copier la liste
+        </button>
+    </div>
+</div>
+
+{# 🎯 Script pour copier dans le presse-papiers #}
+<script>
+function copyToClipboard() {
+    let text = "Liste pour {{ calcul.typeEvenement }} - {{ calcul.nbPersonnes }} personnes\n\n";
+    {% for item, quantite in resultats %}
+    text += "{{ item }} : {{ quantite }}\n";
+    {% endfor %}
+    
+    navigator.clipboard.writeText(text).then(function() {
+        // Feedback visuel
+        const btn = document.getElementById('copyBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check"></i> Copié !';
+        btn.classList.remove('btn-outline-info');
+        btn.classList.add('btn-success');
+        
+        setTimeout(function() {
+            btn.innerHTML = originalText;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-info');
+        }, 2000);
+    });
+}
+</script>
+
+{# 🎯 Styles pour l'impression #}
+<style>
+@media print {
+    .btn { display: none !important; }
+    .alert { border: 1px solid #ccc !important; }
+    body { background: white !important; }
+}
+</style>
+{% endblock %}

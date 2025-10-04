@@ -1,0 +1,68 @@
+/* Réinitialisation complète */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden; /* évite les barres de défilement horizontales */
+}
+
+/* Hero full screen sans espace */
+.hero {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh; /* prend toute la hauteur de l'écran */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    background-image: url('../images/imageFesti.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* effet parallax */
+    z-index: 1; /* Ajoutez un z-index */
+}
+
+/* Overlay sombre */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 0;
+}
+
+/* Contenu centré par-dessus */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    margin-top: 80px; /* Ajustez selon la hauteur de votre menu */
+}
+
+/* Si vous avez un menu, assurez-vous qu'il ait un z-index élevé */
+.navbar {
+    position: relative !important; /* Assurez-vous qu'elle reste fixe */
+    z-index: 10;
+    background-color: rgba(0,0,0,0.9); /* Optionnel : fond semi-transparent */
+}
+
+/* Footer flottant en bas */
+footer {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10; /* Au-dessus de la hero */
+    background-color: rgba(0,0,0,0.9) !important; /* Plus opaque */
+}
+
+/* Footer toujours collé à la hero */
+body, html {
+    height: 100%;
+}
