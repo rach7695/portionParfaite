@@ -5,6 +5,7 @@ namespace App\Form;
 
 use App\Entity\Calcul;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -32,12 +33,52 @@ class CalculFormType extends AbstractType
                     'class' => 'form-select'
                 ]
             ])
+
+            ->add('viandesBarbecue', ChoiceType::class, [
+                'label' => 'Sélectionnez vos viandes',
+                'choices' => [
+                    'Merguez' => 'merguez',
+                    'Saucisses' => 'saucisses',
+                    'Brochettes' => 'brochettes',
+                    'Steaks hachés' => 'steaks',
+                    'Côtes de porc' => 'cotes_porc',
+                    'Grosses côtes de bœuf à partager' => 'cotes_boeuf',
+                    'Pilons de poulet' => 'pilons_poulet',
+                    'Cuisses de poulet' => 'cuisses_poulet',
+                    'Travers de porc' => 'travers_porc',
+                    'Chipolatas' => 'chipolatas',
+                ],
+                'multiple' => true,
+                'expanded' => true, //affiche des checkboxes
+                'required' => false,
+                'attr' => [
+                    'class' => 'viandes-barbecue-container'
+                ],
+                'label_attr' => [
+                    'class' => 'form-label fw-bold'
+                ],
+            ])
+
+            ->add('sansAlcool', CheckboxType::class, [
+                'label' => 'Evénement sans alcool',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-check-input'
+                ],
+                'label_attr' => [
+                    'class' => 'form-check-label'
+                ],
+                'help' => 'Cochez cette case pour exlure les boissons alcoolisée'
+            ])
+
+
+
             ->add('nbPersonnes', IntegerType::class, [
-                'label' => 'Nombre de personnes',
+                'label' => 'Nombre d\'adultes',
                 'attr'  => [
                     'class' => 'form-control',
                     'min' => 1,
-                    'placeholder' => 'Entrer le nombre de personnes'
+                    'placeholder' => 'Entrer le nombre d\'adultes'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Ce champ est requis']),
@@ -63,6 +104,7 @@ class CalculFormType extends AbstractType
                 'data' => 0 // Valeur par défaut
             ])
 
+        
 
             ->add('dateEvenement', DateType::class, [
                 'label' => 'Date de l\'événement',

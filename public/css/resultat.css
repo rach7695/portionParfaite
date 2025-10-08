@@ -1,0 +1,268 @@
+/* Variables */
+:root {
+    --primary-color: #4A90E2;
+    --secondary-color: #50C878;
+    --accent-color: #F5A623;
+    --danger-color: #E94B3C;
+    --light-bg: #F8F9FA;
+    --dark-text: #2C3E50;
+}
+
+/* En-têtes de catégories */
+.category-header {
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 15px !important;
+    border: none !important;
+}
+
+.category-header i {
+    margin-right: 8px;
+}
+
+.category-boissons-alcool {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.category-boissons-non-alcool {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.category-pain {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.category-aperitif {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    color: #2C3E50 !important;
+}
+
+.category-barbecue {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+.category-condiments {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #2C3E50 !important;
+}
+
+.category-desserts {
+    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+}
+
+.category-materiel {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+.category-enfants {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: #2C3E50 !important;
+}
+
+/* Tableau */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(74, 144, 226, 0.05);
+}
+
+.table {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    border: none;
+    padding: 16px;
+    font-weight: 600;
+}
+
+.table tbody td {
+    padding: 14px 15px;
+    vertical-align: middle;
+    border-color: #e9ecef;
+}
+
+/* Badge quantité */
+.badge-quantity {
+    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Boutons */
+.btn-amazon {
+    background: linear-gradient(135deg, #50C878 0%, #3da35d 100%);
+    border: none;
+    padding: 6px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    color: white;
+    font-weight: 500;
+}
+
+.btn-amazon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(80, 200, 120, 0.4);
+    color: white;
+}
+
+.btn-marmiton {
+    background: linear-gradient(135deg, #F5A623 0%, #e09512 100%);
+    border: none;
+    padding: 6px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    color: white;
+    font-weight: 500;
+}
+
+.btn-marmiton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
+    color: white;
+}
+
+/* Cards d'information */
+.info-card {
+    color: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.info-card h5 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.info-card .big-number {
+    font-size: 2.8rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.info-card-adultes {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.info-card-enfants {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.info-card-total {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.info-card-date {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+/* Alert */
+.alert-info {
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+    border: none;
+    border-radius: 12px;
+    color: #00695c;
+}
+
+.alert-info h5 {
+    color: #004d40;
+    font-weight: 600;
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Boutons d'action */
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: 500;
+}
+
+.btn-outline-primary {
+    border: 2px solid #4A90E2;
+    color: #4A90E2;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: 500;
+    background: white;
+}
+
+.btn-outline-primary:hover {
+    background: #4A90E2;
+    color: white;
+}
+
+.btn-outline-info {
+    border: 2px solid #00f2fe;
+    color: #00acc1;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: 500;
+    background: white;
+}
+
+.btn-outline-info:hover {
+    background: #00f2fe;
+    color: white;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #50C878 0%, #3da35d 100%);
+    border: none;
+    border-radius: 25px;
+}
+
+/* Titre */
+h1 {
+    color: #2C3E50;
+    font-weight: 700;
+}
+
+/* Message "Bientôt disponible" */
+.text-muted {
+    color: #95a5a6 !important;
+    font-style: italic;
+}
+
+/* Impression */
+@media print {
+    .btn { display: none !important; }
+    .alert { border: 1px solid #ccc !important; page-break-inside: avoid; }
+    .info-card { page-break-inside: avoid; }
+    .table { page-break-inside: auto; }
+    .table tr { page-break-inside: avoid; }
+    .category-header { 
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    body { background: white !important; }
+    @page { margin: 2cm; }
+}

@@ -4,152 +4,130 @@ namespace App\Service;
 
 class AmazonAffiliationService
 {
-    private string $amazonTag;
-    private string $baseUrl = 'https://www.amazon.fr';
-
-    public function __construct(string $amazonTag = 'votre-tag-21')
-    {
-        $this->amazonTag = $amazonTag;
-    }
+    // Produits spécifiques qui vont vers Marmiton
+    private const PRODUITS_MARMITON = [
+        'Mini-bouchées',
+        'Toasts',
+    ];
     
+    // Mapping des catégories vers leurs destinations
+    private const CATEGORIES = [
+        'MATÉRIEL' => 'amazon',
+        'CONDIMENTS' => 'amazon',
+        'BOISSONS ALCOOLISÉES' => 'default', // En attente caviste
+        'BOISSONS NON ALCOOLISÉES' => 'default',
+        'DESSERTS' => 'default',
+        'PAIN & BASES' => 'default',
+        'SPÉCIAL BARBECUE' => 'default',
+        'APÉRITIF' => 'default', // Géré produit par produit
+        'ENFANTS (2-12 ans)' => 'default',
+    ];
+
     /**
-     * Génère un lien d'affiliation Amazon pour un produit
+     * Détermine vers quel site rediriger selon la catégorie et le produit
      */
-    public function genererLienAffilie(string $produit): string
+    public function genererLien(string $produit, string $categorie): ?string
     {
-        $motsCles = $this->optimiserMotsCles($produit);
+        // Vérifier d'abord si c'est un produit Marmiton spécifique
+        foreach (self::PRODUITS_MARMITON as $produitMarmiton) {
+            if (stripos($produit, $produitMarmiton) !== false) {
+                return $this->genererLienMarmiton($produit);
+            }
+        }
         
-        $parametres = [
-            'k' => $motsCles,
-            'tag' => $this->amazonTag,
-            'linkCode' => 'ur2',
-            'linkId' => uniqid(), // ID unique pour le tracking
-            'camp' => '1642',
-            'creative' => '6746'
-        ];
+        // Sinon, utiliser la catégorie
+        $type = self::CATEGORIES[$categorie] ?? 'default';
         
-        return $this->baseUrl . '/s?' . http_build_query($parametres);
+        return match($type) {
+            'amazon' => $this->genererLienAmazon($produit),
+            'default' => null, // Pas de lien pour le moment
+        };
     }
 
     /**
-     * Optimise les mots-clés pour améliorer les résultats Amazon
+     * Génère un lien Amazon avec affiliation (à configurer avec ton ID partenaire)
      */
-    private function optimiserMotsCles(string $produit): string
+    private function genererLienAmazon(string $produit): string
     {
-        // Supprime les mentions de quantité et grammes
-        $produit = preg_replace('/\(\d+g?\/pers\)/', '', $produit);
-        $produit = preg_replace('/\d+\s*g$/', '', $produit);
-        
-        // Mappings pour améliorer les résultats de recherche
-        $mappings = [
-            'Bouteilles de vin rouge' => 'vin rouge',
-            'Bouteilles de vin blanc' => 'vin blanc',
-            'Bouteilles de vin rosé' => 'vin rosé',
-            'Bouteilles de champagne' => 'champagne',
-            'Bouteilles d\'eau' => 'eau minérale',
-            'Bouteilles de soda' => 'soda coca cola',
-            'Bouteilles de jus de fruits' => 'jus de fruits',
-            'Batonnets de crudités' => 'légumes crudités',
-            'Tzatziki, houmous et/ou tapenade' => 'houmous tapenade tzatziki',
-            'Olives (vertes, noires, marinées)' => 'olives apéritif',
-        ];
+        $query = urlencode($produit);
+        // TODO: Remplace 'TON_TAG_AFFILIATION' par ton vrai tag Amazon Partenaires
+        return "https://www.amazon.fr/s?k={$query}&tag=TON_TAG_AFFILIATION";
+    }
 
-        // Recherche une correspondance exacte
-        if (isset($mappings[$produit])) {
-            return $mappings[$produit];
+    /**
+     * Génère un lien Marmiton pour les recettes spécifiques
+     */
+    private function genererLienMarmiton(string $produit): string
+    {
+        // Détermine la recette selon le produit
+        if (stripos($produit, 'Mini-bouchées') !== false || stripos($produit, 'Mini-bouchée') !== false) {
+            // Lien vers une page de recettes de mini-bouchées
+            return "https://www.marmiton.org/recettes/recherche.aspx?aqt=mini-bouch%C3%A9es";
         }
+        
+        if (stripos($produit, 'Toast') !== false) {
+            // Lien vers une page de recettes de toasts
+            return "https://www.marmiton.org/recettes/recherche.aspx?aqt=bouch%C3%A9es-ap%C3%A9ritives-chaudes";
+        }
+        
+        // Fallback : recherche générale apéritif
+        return "https://www.marmiton.org/recettes/recherche.aspx?qs=ap%C3%A9ritif";
+    }
 
-        // Nettoyage général
-        $produit = str_replace(['(', ')', '/'], ' ', $produit);
-        $produit = preg_replace('/\s+/', ' ', $produit);
+    /**
+     * Extrait les mots-clés pertinents d'un nom de produit
+     */
+    private function extraireMotsCles(string $produit): string
+    {
+        // Retire les informations de quantité et parenthèses
+        $produit = preg_replace('/\([^)]+\)/', '', $produit);
+        $produit = preg_replace('/\d+g|\/pers|pièces/', '', $produit);
         
         return trim($produit);
     }
 
     /**
-     * Génère des liens spécialisés selon la catégorie
+     * Génère le bouton HTML pour le template Twig
      */
-    public function genererLienSpecialise(string $produit, string $typeEvenement): string
+    public function genererBoutonAchat(string $produit, string $categorie, array $options = []): string
     {
-        $motsCles = $this->optimiserMotsCles($produit);
+        $lien = $this->genererLien($produit, $categorie);
         
-        // Ajoute des mots-clés contextuels selon l'événement
-        $contexte = match($typeEvenement) {
-            'mariage' => $motsCles . ' mariage réception',
-            'bapteme' => $motsCles . ' fête famille',
-            'birthday' => $motsCles . ' anniversaire fête',
-            'apero' => $motsCles . ' apéritif',
-            default => $motsCles
-        };
-        
-        return $this->genererLienAffilie($contexte);
-    }
+        // Si pas de lien disponible, retourne un message
+        if (!$lien) {
+            return '<span class="text-muted small">Bientôt disponible</span>';
+        }
 
-    /**
-     * Crée un lien vers une catégorie Amazon spécifique
-     */
-    public function genererLienCategorie(string $categorie): string
-    {
-        $categories = [
-            'vin' => 'node=537504031',
-            'champagne' => 'node=537504031&rh=n%3A537504031%2Cp_n_feature_twenty-one_browse-bin%3A14876845031',
-            'aperitif' => 'node=537504031',
-            'epicerie' => 'node=340858031',
-            'boissons' => 'node=340862031'
-        ];
+        // Options par défaut
+        $class = $options['class'] ?? 'btn btn-success btn-sm';
+        $text = 'Acheter';
+        $icon = '<i class="bi bi-cart-plus"></i>';
         
-        $nodeParam = $categories[$categorie] ?? 'node=340858031';
-        
-        return $this->baseUrl . '/s?' . http_build_query([
-            'tag' => $this->amazonTag,
-            'linkCode' => 'ur2'
-        ]) . '&' . $nodeParam;
-    }
+        // Personnalisation pour Marmiton
+        foreach (self::PRODUITS_MARMITON as $produitMarmiton) {
+            if (stripos($produit, $produitMarmiton) !== false) {
+                $text = 'Voir recettes';
+                $icon = '<i class="bi bi-book"></i>';
+                $class = str_replace('btn-success', 'btn-warning', $class);
+                break;
+            }
+        }
 
-    /**
-     * Génère un bouton HTML avec lien d'affiliation
-     */
-    public function genererBoutonAchat(string $produit, string $typeEvenement = null, array $options = []): string
-    {
-        $lien = $typeEvenement ? 
-            $this->genererLienSpecialise($produit, $typeEvenement) : 
-            $this->genererLienAffilie($produit);
-            
-        $classe = $options['class'] ?? 'btn btn-outline-success btn-sm';
-        $texte = $options['text'] ?? 'Acheter sur Amazon';
-        $icone = $options['icon'] ?? '<i class="bi bi-cart-plus"></i>';
-        
         return sprintf(
-            '<a href="%s" target="_blank" class="%s" rel="nofollow noopener">%s %s</a>',
+            '<a href="%s" target="_blank" class="%s" rel="noopener noreferrer">%s %s</a>',
             htmlspecialchars($lien),
-            htmlspecialchars($classe),
-            $icone,
-            htmlspecialchars($texte)
+            htmlspecialchars($class),
+            $icon,
+            htmlspecialchars($text)
         );
     }
 
     /**
-     * Track les clics pour analytics (optionnel)
+     * Vérifie si un produit a un lien disponible
      */
-    public function trackClic(string $produit, string $typeEvenement): void
+    public function aLienDisponible(string $categorie): bool
     {
-        // Vous pouvez logger les clics pour analyser les performances
-        // file_put_contents('amazon_clicks.log', 
-        //     date('Y-m-d H:i:s') . " - {$typeEvenement} - {$produit}\n", 
-        //     FILE_APPEND
-        // );
-    }
-
-    /**
-     * Configure le tag Amazon (à appeler depuis un .env)
-     */
-    public function setAmazonTag(string $tag): void
-    {
-        $this->amazonTag = $tag;
-    }
-
-    public function getAmazonTag(): string
-    {
-        return $this->amazonTag;
+        $type = self::CATEGORIES[$categorie] ?? 'default';
+        return in_array($type, ['amazon', 'marmiton']);
     }
 }

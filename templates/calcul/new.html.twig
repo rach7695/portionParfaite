@@ -2,55 +2,78 @@
 
 {% block title %}Calcul d'événement{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/formulaire.css') }}">
+{% endblock %}
+
 {% block body %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4><i class="bi bi-calculator"></i> Calculateur d'événement</h4>
-                </div>
-                <div class="card-body">
-
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-
-                        <div class="mb-3">
-                            {{ form_label(form.typeEvenement, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.typeEvenement, {'attr': {'class': 'form-select'}}) }}
-                            {{ form_errors(form.typeEvenement) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.nbPersonnes, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.nbPersonnes, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.nbPersonnes) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.nbEnfants, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.nbEnfants, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.nbEnfants) }}
-                            {{ form_help(form.nbEnfants) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.dateEvenement, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.dateEvenement, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.dateEvenement) }}
-                        </div>
-
-                        <div class="d-grid">
-                            {{ form_widget(form.calculer) }}
-                        </div>
-
-                    {{ form_end(form) }}
-
-                </div>
+<div class="container">
+    <div class="form-container">
+        <div class="elegant-card">
+            <div class="card-header-elegant">
+                <h4>Calculateur d'événement</h4>
+                <p style="margin: 10px 0 0 0; font-size: 0.9rem; opacity: 0.9;">Estimez les quantités parfaites pour votre événement</p>
             </div>
+            
+            <div class="card-body-elegant">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="mb-custom">
+                        {{ form_label(form.typeEvenement) }}
+                        {{ form_widget(form.typeEvenement) }}
+                        {{ form_errors(form.typeEvenement) }}
+                    </div>
 
+                    <div class="mb-custom" id="viandes-container" style="display: none;">
+                        {{ form_label(form.viandesBarbecue) }}
+                        <div class="viandes-checkboxes">
+                            {{ form_widget(form.viandesBarbecue) }}
+                        </div>
+                        {{ form_errors(form.viandesBarbecue) }}
+                    </div>
+                    
+                    <div class="mb-custom">
+                        <div class="form-check form-switch">
+                            {{ form_widget(form.sansAlcool, {'attr': {'role': 'switch'}}) }}
+                            {{ form_label(form.sansAlcool) }}
+                        </div>
+                        <small class="form-text">{{ form_help(form.sansAlcool) }}</small>
+                        {{ form_errors(form.sansAlcool) }}
+                    </div>
+                    
+                    <div class="mb-custom">
+                        {{ form_label(form.nbPersonnes) }}
+                        {{ form_widget(form.nbPersonnes) }}
+                        <small class="form-text">{{ form_help(form.nbPersonnes) }}</small>
+                        {{ form_errors(form.nbPersonnes) }}
+                    </div>
+                    
+                    <div class="mb-custom">
+                        {{ form_label(form.nbEnfants) }}
+                        {{ form_widget(form.nbEnfants) }}
+                        <small class="form-text">{{ form_help(form.nbEnfants) }}</small>
+                        {{ form_errors(form.nbEnfants) }}
+                    </div>
+                    
+                    <div class="mb-custom">
+                        {{ form_label(form.dateEvenement) }}
+                        {{ form_widget(form.dateEvenement) }}
+                        {{ form_errors(form.dateEvenement) }}
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ form_widget(form.calculer, {'attr': {'class': 'btn-calculate'}}) }}
+                    </div>
+                
+                {{ form_end(form) }}
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/formulaire.js') }}"></script>
+{% endblock %}

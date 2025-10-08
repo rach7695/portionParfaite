@@ -1,13 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil - FestiCalc{% endblock %}
+{% block body_class %} page-home{% endblock %}
 
 {% block body %}
-<div class="hero">
-    <div class="hero-content">
-        <h1 class="display-3 fw-bold">Bienvenue sur Le comptoir des invités</h1>
-        <p class="lead">Calculez vos boissons, toasts et plus encore en fonction du nombre d’invités.</p>
-        <a href="{{ path('app_calcul')}}" class="btn btn-primary btn-lg mt-3">Commencer un calcul</a>
-    </div>
-</div>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="display-3 fw-bold mb-4">Bienvenue sur le Comptoire des invités</h1>
+            <p class="lead mb-5">Calculez les quantités parfaites pour vos événements en quelques clics</p>
+            <a href="{{ path('app_calcul') }}" class="btn-hero">
+    <i class="bi bi-calculator-fill"></i> Commencer le calcul
+    <i class="bi bi-arrow-right ms-2"></i>
+</a>
+        </div>
+    </section>
 {% endblock %}

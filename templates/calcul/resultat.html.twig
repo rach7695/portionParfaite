@@ -3,62 +3,136 @@
 {% block title %}Résultats du calcul{% endblock %}
 
 {% block stylesheets %}
-    {{parent() }}
-    <link rel="stylesheet" href="{{asset('css/resultat.css')}}">
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/resultat.css') }}">
+    
 {% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h1 class="mb-4">Résultats pour {{ calcul.typeEvenement }}</h1>
-    <p><strong>Nombre de personnes :</strong> {{ calcul.nbPersonnes }}</p>
-    <p><strong>Nombre d'enfants :</strong> {{ calcul.nbEnfants }}</p>
-    <p><strong>Total invités :</strong> {{ calcul.totalPersonnes }}</p>
-    <p><strong>Date de l'événement :</strong> {{ calcul.dateEvenement|date('d/m/Y') }}</p>
-    <p><strong>Date du calcul :</strong> {{ calcul.dateCalcul|date('d/m/Y H:i') }}</p>
+<div class="container mt-5 mb-5">
+    {# En-tête avec informations principales #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-center mb-4">
+                <i class="bi bi-calendar-check"></i> 
+                Liste pour votre {{ calcul.typeEvenement|upper }}
+            </h1>
+        </div>
+    </div>
 
-    <h2 class="mt-4">Détails :</h2>
-    
-    {# 🎯 VERSION AMÉLIORÉE avec liens Amazon #}
+    {# Cards d'information #}
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="info-card info-card-adultes text-center">
+                <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+                <div class="big-number">{{ calcul.nbPersonnes }}</div>
+                <h5>Adultes</h5>
+            </div>
+        </div>
+        
+        {% if calcul.nbEnfants > 0 %}
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="info-card info-card-enfants text-center">
+                <i class="bi bi-emoji-smile-fill" style="font-size: 2rem;"></i>
+                <div class="big-number">{{ calcul.nbEnfants }}</div>
+                <h5>Enfants</h5>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="info-card info-card-total text-center">
+                <i class="bi bi-person-plus-fill" style="font-size: 2rem;"></i>
+                <div class="big-number">{{ calcul.totalPersonnes }}</div>
+                <h5>Total invités</h5>
+            </div>
+        </div>
+        
+        {% if calcul.dateEvenement %}
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="info-card info-card-date text-center">
+                <i class="bi bi-calendar-event" style="font-size: 2rem;"></i>
+                <div style="font-size: 1.2rem; font-weight: bold; margin-top: 10px;">
+                    {{ calcul.dateEvenement|date('d/m/Y') }}
+                </div>
+                <h5>Date événement</h5>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {# Tableau principal avec catégories #}
     <div class="table-responsive">
         <table class="table table-striped table-hover">
-            <thead class="table-dark">
+            <thead>
                 <tr>
-                    <th><i class="bi bi-box"></i> Produit</th>
-                    <th class="text-center"><i class="bi bi-123"></i> Quantité</th>
-                    <th class="text-center"><i class="bi bi-cart"></i> Acheter</th>
+                    <th style="width: 50%;"><i class="bi bi-box"></i> Produit</th>
+                    <th class="text-center" style="width: 25%;"><i class="bi bi-123"></i> Quantité</th>
+                    <th class="text-center" style="width: 25%;"><i class="bi bi-cart"></i> Acheter</th>
                 </tr>
             </thead>
             <tbody>
-                {% for item, quantite in resultats %}
-                <tr>
-                    <td>{{ item }}</td>
-                    <td class="text-center">
-                        <span class="badge bg-primary fs-6">{{ quantite }}</span>
-                    </td>
-                    <td class="text-center">
-                        {# ✅ AJOUT du service Amazon ici #}
-                        {% if amazonService is defined %}
-                            {{ amazonService.genererBoutonAchat(item, calcul.typeEvenement, {
-                                'class': 'btn btn-success btn-sm',
-                                'text': 'Acheter',
-                                'icon': '<i class="bi bi-cart-plus"></i>'
-                            })|raw }}
-                        {% else %}
-                            {# Fallback si le service n'est pas disponible #}
-                            <a href="https://www.amazon.fr/s?k={{ item|url_encode }}" 
-                               target="_blank" 
-                               class="btn btn-success btn-sm">
-                                <i class="bi bi-cart-plus"></i> Acheter
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
+                {% for categorie, items in resultats %}
+                    {# En-tête de catégorie avec classes CSS spécifiques #}
+                    <tr>
+                        <td colspan="3" class="category-header 
+                            {% if categorie == 'BOISSONS ALCOOLISÉES' %}category-boissons-alcool
+                            {% elseif categorie == 'BOISSONS NON ALCOOLISÉES' %}category-boissons-non-alcool
+                            {% elseif categorie == 'PAIN & BASES' %}category-pain
+                            {% elseif categorie == 'APÉRITIF' %}category-aperitif
+                            {% elseif categorie == 'SPÉCIAL BARBECUE' %}category-barbecue
+                            {% elseif categorie == 'CONDIMENTS' %}category-condiments
+                            {% elseif categorie == 'DESSERTS' %}category-desserts
+                            {% elseif categorie == 'MATÉRIEL' %}category-materiel
+                            {% elseif categorie == 'ENFANTS (2-12 ans)' %}category-enfants
+                            {% endif %}">
+                            {% if categorie == 'BOISSONS ALCOOLISÉES' %}
+                                <i class="bi bi-cup-straw"></i>
+                            {% elseif categorie == 'BOISSONS NON ALCOOLISÉES' %}
+                                <i class="bi bi-droplet-fill"></i>
+                            {% elseif categorie == 'PAIN & BASES' %}
+                                <i class="bi bi-basket-fill"></i>
+                            {% elseif categorie == 'APÉRITIF' %}
+                                <i class="bi bi-emoji-sunglasses"></i>
+                            {% elseif categorie == 'SPÉCIAL BARBECUE' %}
+                                <i class="bi bi-fire"></i>
+                            {% elseif categorie == 'CONDIMENTS' %}
+                                <i class="bi bi-journal-text"></i>
+                            {% elseif categorie == 'DESSERTS' %}
+                                <i class="bi bi-cake2"></i>
+                            {% elseif categorie == 'MATÉRIEL' %}
+                                <i class="bi bi-tools"></i>
+                            {% elseif categorie == 'ENFANTS (2-12 ans)' %}
+                                <i class="bi bi-balloon-heart"></i>
+                            {% else %}
+                                <i class="bi bi-star"></i>
+                            {% endif %}
+                            {{ categorie }}
+                        </td>
+                    </tr>
+                    
+                    {# Lignes de produits #}
+                    {% for item, quantite in items %}
+                    <tr>
+                        <td>{{ item }}</td>
+                        <td class="text-center">
+                            <span class="badge badge-quantity">{{ quantite }}</span>
+                        </td>
+                        <td class="text-center">
+                            {% if quantite != '-' and quantite != 'Inclus adultes' %}
+                                {{ amazonService.genererBoutonAchat(item, categorie)|raw }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    {# 🎯 AJOUT d'une section avec conseils #}
+    {# Section conseils et actions #}
     <div class="row mt-5">
         <div class="col-md-8">
             <div class="alert alert-info">
@@ -72,14 +146,27 @@
                 {% elseif calcul.typeEvenement == 'mariage' %}
                     <ul class="mb-0">
                         <li>Commandez 10% de quantités en plus par sécurité</li>
-                        <li>Prévoyez du champagne pour le toast (1 bouteille pour 10 personnes)</li>
+                        <li>Prévoyez du champagne pour le toast</li>
                         <li>N'oubliez pas les boissons chaudes pour la fin de soirée</li>
                     </ul>
-                {% else  %}
-                    <p class="mb-0">Pensez à assaisonner vos viandes la veille. Elles n'en seront que meilleures !</p>
+                {% elseif calcul.typeEvenement == 'barbecue' %}
+                    <ul class="mb-0">
+                        <li>Pensez à assaisonner vos viandes la veille</li>
+                        <li>Prévoyez des options végétariennes</li>
+                        <li>N'oubliez pas le charbon et les allume-feux</li>
+                    </ul>
+                {% elseif calcul.typeEvenement == 'bapteme' %}
+                    <ul class="mb-0">
+                        <li>Privilégiez des présentations élégantes</li>
+                        <li>Prévoyez des options sans alcool pour tous</li>
+                        <li>Pensez aux allergies alimentaires courantes</li>
+                    </ul>
+                {% else %}
+                    <p class="mb-0">Prévoyez toujours 10-15% de plus que les quantités calculées</p>
                 {% endif %}
             </div>
         </div>
+        
         <div class="col-md-4">
             <div class="card border-success">
                 <div class="card-body text-center">
@@ -97,51 +184,25 @@
         </div>
     </div>
 
-    {# 🎯 Boutons d'actions #}
-    <div class="d-flex gap-2 justify-content-center mt-4">
-        <a href="{{ path('app_calcul') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Nouveau calcul
-        </a>
-        <button onclick="window.print()" class="btn btn-outline-primary">
-            <i class="bi bi-printer"></i> Imprimer la liste
-        </button>
-        <button onclick="copyToClipboard()" class="btn btn-outline-info" id="copyBtn">
-            <i class="bi bi-clipboard"></i> Copier la liste
-        </button>
-    </div>
+    {# Boutons d'actions #}
+    <button onclick="copyToClipboard()" 
+        class="btn btn-outline-info" 
+        id="copyBtn"
+        data-type="{{ calcul.typeEvenement }}"
+        data-nb-personnes="{{ calcul.nbPersonnes }}"
+        data-nb-enfants="{{ calcul.nbEnfants }}"
+        data-total-personnes="{{ calcul.totalPersonnes }}"
+        data-date-evenement="{% if calcul.dateEvenement %}{{ calcul.dateEvenement|date('d/m/Y') }}{% endif %}">
+    <i class="bi bi-clipboard"></i> Copier la liste
+</button>
 </div>
 
-{# 🎯 Script pour copier dans le presse-papiers #}
-<script>
-function copyToClipboard() {
-    let text = "Liste pour {{ calcul.typeEvenement }} - {{ calcul.nbPersonnes }} personnes\n\n";
-    {% for item, quantite in resultats %}
-    text += "{{ item }} : {{ quantite }}\n";
-    {% endfor %}
-    
-    navigator.clipboard.writeText(text).then(function() {
-        // Feedback visuel
-        const btn = document.getElementById('copyBtn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check"></i> Copié !';
-        btn.classList.remove('btn-outline-info');
-        btn.classList.add('btn-success');
-        
-        setTimeout(function() {
-            btn.innerHTML = originalText;
-            btn.classList.remove('btn-success');
-            btn.classList.add('btn-outline-info');
-        }, 2000);
-    });
-}
-</script>
 
-{# 🎯 Styles pour l'impression #}
-<style>
-@media print {
-    .btn { display: none !important; }
-    .alert { border: 1px solid #ccc !important; }
-    body { background: white !important; }
-}
-</style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/resultat.js') }}"></script>
+
+
 {% endblock %}

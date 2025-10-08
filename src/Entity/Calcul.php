@@ -32,6 +32,34 @@ class Calcul
     #[ORM\Column]
     private ?\DateTimeImmutable $dateCalcul = null;
 
+    #[ORM\Column(type: 'boolean' , options: ['default' => false])]
+    private ?bool $sansAlcool = false;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+private ?array $viandesBarbecue = null;
+
+public function getViandesBarbecue(): ?array
+{
+    return $this->viandesBarbecue;
+}
+
+public function setViandesBarbecue(?array $viandesBarbecue): static
+{
+    $this->viandesBarbecue = $viandesBarbecue;
+    return $this;
+}
+
+    public function isSansAlcool(): ?bool
+    {
+        return $this->sansAlcool;
+    }
+
+    public function setSansAlcool(bool $sansAlcool): static
+    {
+        $this->sansAlcool = $sansAlcool;
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -1,0 +1,191 @@
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 0.3px 0;
+}
+
+.form-container {
+    max-width: 550px;
+    margin: 30px auto 80px auto; /* 60px en haut, 20px en bas */
+}
+
+.elegant-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+    border: none;
+}
+
+.card-header-elegant {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 35px 30px;
+    text-align: center;
+    border: none;
+}
+
+.card-header-elegant h4 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.6rem;
+    letter-spacing: 0.5px;
+}
+
+.card-header-elegant i {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.card-body-elegant {
+    padding: 40px 35px;
+}
+
+.form-label {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+.form-control, .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+.form-check-input {
+    width: 50px;
+    height: 25px;
+    border-radius: 25px;
+    border: 2px solid #d1d5db;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.form-check-label {
+    color: #2c3e50;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+.btn-calculate {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    letter-spacing: 0.5px;
+}
+
+.btn-calculate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    color: white;
+}
+
+.btn-calculate:active {
+    transform: translateY(0);
+}
+
+.mb-custom {
+    margin-bottom: 25px;
+}
+
+.invalid-feedback {
+    color: #e74c3c;
+    font-size: 0.875rem;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.elegant-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Checkboxes viandes */
+.viandes-checkboxes {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.viandes-checkboxes input[type="checkbox"] {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    border: 2px solid #d1d5db;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-right: 12px;
+}
+
+.viandes-checkboxes input[type="checkbox"]:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.viandes-checkboxes label {
+    display: block;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    transition: all 0.2s ease;
+}
+
+.viandes-checkboxes label:hover {
+    background: #f0f0f0;
+    border-color: #667eea;
+}
+
+.viandes-checkboxes input[type="checkbox"]:checked ~ label,
+.viandes-checkboxes label:has(input:checked) {
+    background: #e8edff;
+    border-color: #667eea;
+    color: #667eea;
+    font-weight: 600;
+}
